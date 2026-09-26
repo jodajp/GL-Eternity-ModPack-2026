@@ -2,26 +2,92 @@ Add-Type -AssemblyName System.Net.Http
 Add-Type -AssemblyName System.Web
 
 # ==========================================
-# 0. CONFIGURAÇÕES
+# 0. IMPLEMENTAÇÃO EM C# DO CURSEFORGE MURMUR2
+# ==========================================
+Add-Type -TypeDefinition @"
+using System;
+using System.IO;
+
+public static class CurseMurmurHash
+{
+    private const uint M = 0x5bd1e995;
+    private const int R = 24;
+
+    public static uint Compute(string filePath)
+    {
+        byte[] buffer = File.ReadAllBytes(filePath);
+        
+        // Passo 1: Filtrar caracteres whitespace conforme a norma CurseForge
+        int length = 0;
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            byte b = buffer[i];
+            if (b != 0x9 && b != 0xa && b != 0xd && b != 0x20)
+            {
+                buffer[length++] = b;
+            }
+        }
+
+        // Passo 2: Murmur2 com seed = 1
+        uint h = 1u ^ (uint)length;
+        int currentIndex = 0;
+
+        while (length >= 4)
+        {
+            uint k = BitConverter.ToUInt32(buffer, currentIndex);
+            k *= M;
+            k ^= k >> R;
+            k *= M;
+
+            h *= M;
+            h ^= k;
+
+            currentIndex += 4;
+            length -= 4;
+        }
+
+        switch (length)
+        {
+            case 3:
+                h ^= (uint)(buffer[currentIndex + 2] << 16);
+                goto case 2;
+            case 2:
+                h ^= (uint)(buffer[currentIndex + 1] << 8);
+                goto case 1;
+            case 1:
+                h ^= buffer[currentIndex];
+                h *= M;
+                break;
+        }
+
+        h ^= h >> 13;
+        h *= M;
+        h ^= h >> 15;
+
+        return h;
+    }
+}
+"@
+
+# ==========================================
+# 1. CONFIGURAÇÕES
 # ==========================================
 $repo = "jodajp/GL-Eternity-ModPack-2026"
 $tag = "latest"
 $modsFolder = [System.IO.Path]::Combine(($PSScriptRoot), "mods")
-$outputIndex = [System.IO.Path]::Combine(($PSScriptRoot), "automodpack-index.json")
+$contentJsonPath = [System.IO.Path]::Combine(($PSScriptRoot), "automodpack-content.json")
 
 if (-not [System.IO.Directory]::Exists($modsFolder)) {
     Write-Error "Pasta de mods nao encontrada: $modsFolder"
     return
 }
 
-# 1. Obter token do GitHub CLI autenticado
 $token = (gh auth token 2>$null)
 if (-not $token) {
     Write-Error "Token do GitHub nao encontrado. Executa 'gh auth login' primeiro."
     return
 }
 
-# Configuracao do cliente HTTP .NET
 $httpClient = [System.Net.Http.HttpClient]::new()
 $httpClient.DefaultRequestHeaders.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new("Bearer", ($token))
 $httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("GL-Pack-Sync-Script")
@@ -29,95 +95,86 @@ $httpClient.Timeout = [System.TimeSpan]::FromMinutes(5)
 
 try {
     # ==========================================
-    # 2. CALCULAR HASHES E GERAR MANIFESTO
+    # 2. GERAR automodpack-content.json LOCAL
     # ==========================================
-    Write-Host "A calcular hashes dos mods locais..." -ForegroundColor Cyan
+    Write-Host "A calcular hashes SHA-1 e Murmur2 de todos os mods..." -ForegroundColor Cyan
 
-    $filesList = [System.Collections.Generic.List[PSCustomObject]]::new()
-    $localFileNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-    $sha256Managed = [System.Security.Cryptography.SHA256]::Create()
-    
     $jarFiles = [System.IO.Directory]::GetFiles(($modsFolder), "*.jar")
+    $localFileNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $listEntries = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $sha1Managed = [System.Security.Cryptography.SHA1]::Create()
 
-    for ($i = 0; $i -lt$jarFiles.Length; $i++) {$filePath = $jarFiles[$i]
+    for ($i = 0; $i -lt $jarFiles.Length; $i++) {
+        $filePath = $jarFiles[$i]
         $fileName = [System.IO.Path]::GetFileName($filePath)
         $fileInfo = [System.IO.FileInfo]::new($filePath)
+
         try {
-            $fileStream = [System.IO.File]::OpenRead($filePath)
-            $hashBytes = $sha256Managed.ComputeHash($fileStream)
-            $fileStream.Close()
-            $fileStream.Dispose()
+            # SHA-1
+            $stream = [System.IO.File]::OpenRead($filePath)
+            $shaBytes = $sha1Managed.ComputeHash($stream)
+            $stream.Close()
+            $stream.Dispose()
+            $sha1Hex = [System.BitConverter]::ToString($shaBytes).Replace("-", "").ToLower()
 
-            $hashString = [System.BitConverter]::ToString($hashBytes).Replace("-", "").ToLower()
+            # Murmur2 (CurseForge)
+            $murmurVal = [CurseMurmurHash]::Compute($filePath)
 
-            $filesList.Add([PSCustomObject]@{
-                path = $fileName
-                hash = $hashString
-                size = $fileInfo.Length
+            $listEntries.Add([PSCustomObject]@{
+                file = "/mods/$fileName"
+                size = [string]$fileInfo.Length
+                type = "mod"
+                editable = $false
+                forceCopy = $true
+                sha1 = $sha1Hex
+                murmur = [string]$murmurVal
             })
+
             $null = $localFileNames.Add($fileName)
         } catch {
-            Write-Warning "Falha ao ler $($fileName):$_"
+            Write-Warning "Falha ao processar ${fileName}: $_"
         }
     }
-    $sha256Managed.Dispose()
+    $sha1Managed.Dispose()
 
-    $manifest = [PSCustomObject]@{
-        version = 1
-        files = $filesList
+    # Estrutura oficial do AutoModpack v4
+    $autoModpackManifest = [PSCustomObject]@{
+        modpackName = "GL-Eternity-2026"
+        automodpackVersion = "4.0.5"
+        loader = "neoforge"
+        loaderVersion = "21.1.250"
+        mcVersion = "1.21.1"
+        list = $listEntries
     }
 
-    $jsonContent =$manifest | ConvertTo-Json -Depth 4
-    [System.IO.File]::WriteAllText(($outputIndex),$jsonContent, [System.Text.Encoding]::UTF8)
+    $jsonOutput = $autoModpackManifest | ConvertTo-Json -Depth 6
+    [System.IO.File]::WriteAllText(($contentJsonPath), $jsonOutput, [System.Text.Encoding]::UTF8)
 
-    Write-Host "Hashes concluidos ($($filesList.Count) mods locais)." -ForegroundColor Cyan
-
-    # ==========================================
-    # 3. GARANTIR RELEASE 'latest' E OBTER ID
-    # ==========================================
-    gh release view ($tag) --repo ($repo) 2>$null
-    if ($LASTEXITCODE -ne 0) {
-        gh release create ($tag) --title "Latest Build" --notes "Build sincronizada automaticamente" --repo ($repo)
-    }
-
-    Write-Host "A mapear assets remotos da Release..." -ForegroundColor Cyan
-
-    # Obter dados da release diretamente via REST API do GitHub (.NET puro)
-    $relUrl = "https://api.github.com/repos/$repo/releases/tags/$tag"
-    $relReq = [System.Net.Http.HttpRequestMessage]::new([System.Net.Http.HttpMethod]::Get, $relUrl)
-    $relResp = $httpClient.SendAsync($relReq).GetAwaiter().GetResult()
-    $relJson = $relResp.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
-
-    $releaseNumericId = $relJson.id
-    $remoteAssets = @{}
+    Write-Host "Ficheiro automodpack-content.json gerado com sucesso ($($listEntries.Count) mods)!" -ForegroundColor Green
 
     # ==========================================
-    # 4. MAPEAMENTO ROBUSTO DOS ASSETS REMOTOS
+    # 3. MAPEAMENTO DOS ASSETS REMOTOS NO GITHUB
     # ==========================================
-    Write-Host "A mapear assets remotos da Release..." -ForegroundColor Cyan
+    Write-Host "`nA mapear assets remotos da Release..." -ForegroundColor Cyan
 
-    # Obter Release ID numérico
-    $relData = (gh api "repos/$repo/releases/tags/$tag" | ConvertFrom-Json)
+    $relData = (gh api ("repos/" + $repo + "/releases/tags/" + $tag) | ConvertFrom-Json)
     $releaseNumericId = $relData.id
 
     $remoteAssets = @{}
     $page = 1
 
     while ($true) {
-        # Lê a página crua via gh api
-        $jsonText = gh api "repos/$repo/releases/$releaseNumericId/assets?per_page=100&page=$page" 2>$null
+        $endpoint = "repos/" + $repo + "/releases/" + $releaseNumericId + "/assets?per_page=100&page=" + $page
+        $jsonText = (gh api $endpoint 2>$null)
         if (-not $jsonText) { break }
 
-        $pageItems = ConvertFrom-Json -InputObject $jsonText
-        
-        # Garante que é tratado estritamente como array
+        $pageItems = ($jsonText | ConvertFrom-Json)
         $itemsArray = @($pageItems)
         if ($itemsArray.Length -eq 0) { break }
 
         for ($idx = 0; $idx -lt $itemsArray.Length; $idx++) {
             $singleAsset = $itemsArray[$idx]
             if ($singleAsset.name -and $singleAsset.id) {
-                # Mapeamento 1:1 estrito
                 $remoteAssets[[string]$singleAsset.name] = [string]$singleAsset.id
             }
         }
@@ -126,58 +183,47 @@ try {
         $page++
     }
 
-    Write-Host "Release ID: $releaseNumericId | Assets reais no GitHub: $($remoteAssets.Count)" -ForegroundColor Green
+    Write-Host "Release ID: $releaseNumericId | Assets no GitHub: $($remoteAssets.Count)" -ForegroundColor Green
 
     # ==========================================
-    # 5. PURGA DE FICHEIROS OBSOLETOS (.jar)
+    # 4. PURGA DE FICHEIROS OBSOLETOS
     # ==========================================
-    Write-Host "`nA verificar versoes antigas para eliminar..." -ForegroundColor Cyan
+    Write-Host "`nA verificar ficheiros obsoletos para remover..." -ForegroundColor Cyan
     $deletedCount = 0
-
     $assetNames = [string[]]($remoteAssets.Keys)
 
     for ($idx = 0; $idx -lt $assetNames.Length; $idx++) {
         $assetName = $assetNames[$idx]
 
-        # Apenas mods .jar (o manifesto index.json fica intocado)
         if ($assetName.EndsWith(".jar", [System.StringComparison]::OrdinalIgnoreCase)) {
             if (-not $localFileNames.Contains($assetName)) {
                 $assetId = $remoteAssets[$assetName]
-                Write-Host "A remover versao obsoleta: $assetName (ID: $assetId)" -ForegroundColor Red
+                Write-Host "A remover versao antiga: $assetName" -ForegroundColor Red
                 
                 try {
                     $deleteUrl = "https://api.github.com/repos/$repo/releases/assets/$assetId"
                     $delResp = $httpClient.DeleteAsync($deleteUrl).GetAwaiter().GetResult()
-                    
                     if ($delResp.IsSuccessStatusCode) {
                         $deletedCount++
                         $remoteAssets.Remove($assetName)
-                    } else {
-                        Write-Warning "Falha ao apagar $assetName (HTTP $($delResp.StatusCode))"
                     }
                 } catch {
-                    Write-Warning "Erro ao tentar apagar ${assetName}: $_"
+                    Write-Warning "Erro ao apagar ${assetName}: $_"
                 }
             }
         }
     }
 
-    if ($deletedCount -gt 0) {
-        Write-Host "Limpeza concluida: $deletedCount ficheiro(s) antigo(s) removido(s) do GitHub." -ForegroundColor Yellow
-    } else {
-        Write-Host "Nenhum ficheiro obsoleto detetado." -ForegroundColor DarkGray
-    }
+    # ==========================================
+    # 5. UPLOAD DO automodpack-content.json PARA O GITHUB
+    # ==========================================
+    Write-Host "`nA carregar automodpack-content.json para a Release..." -ForegroundColor Yellow
+    gh release upload ($tag) ($contentJsonPath) --repo ($repo) --clobber
 
     # ==========================================
-    # 6. ATUALIZAR MANIFESTO JSON
+    # 6. UPLOAD DELTA DOS MODS .JAR
     # ==========================================
-    Write-Host "`nA atualizar manifesto automodpack-index.json..." -ForegroundColor Yellow
-    gh release upload ($tag) ($outputIndex) --repo ($repo) --clobber
-
-    # ==========================================
-    # 7. UPLOAD DELTA DE MODS NOVOS / MODIFICADOS
-    # ==========================================
-    Write-Host "`nA sincronizar mods em falta..." -ForegroundColor Cyan
+    Write-Host "`nA sincronizar novos mods..." -ForegroundColor Cyan
     $total = $jarFiles.Length
     $current = 0
     $uploadedCount = 0
@@ -188,11 +234,11 @@ try {
         $fileName = [System.IO.Path]::GetFileName($filePath)
 
         if ($remoteAssets.ContainsKey($fileName)) {
-            Write-Host "[$current/$total] Ja sincronizado: $fileName" -ForegroundColor DarkGray
+            Write-Host "[$current/$total] Ja existe: $fileName" -ForegroundColor DarkGray
             continue
         }
 
-        Write-Host "[$current/$total] A carregar: $fileName" -ForegroundColor Green
+        Write-Host "[$current/$total] A enviar: $fileName" -ForegroundColor Green
 
         try {
             $encodedName = [System.Uri]::EscapeDataString($fileName)
@@ -208,26 +254,19 @@ try {
             $fileStream.Dispose()
             $content.Dispose()
 
-            $statusCode = [int]$response.StatusCode
-            $respBody = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
-
             if ($response.IsSuccessStatusCode) {
                 $uploadedCount++
                 $remoteAssets[$fileName] = 0
-                Write-Host "[$current/$total] Carregado com sucesso!" -ForegroundColor Green
-            } elseif ($statusCode -eq 422 -or $respBody -match "already_exists") {
-                Write-Host "[$current/$total] Ja sincronizado no GitHub: $fileName" -ForegroundColor DarkGray
-                $remoteAssets[$fileName] = 0
             } else {
-                Write-Warning "Falha no upload de $fileName (HTTP $statusCode): $respBody"
+                Write-Warning "Falha no envio de $fileName"
             }
         } catch {
-            Write-Warning "Excecao ao carregar ${fileName}: $_"
+            Write-Warning "Excecao ao enviar ${fileName}: $_"
         }
     }
 
-    Write-Host "`nSincronizacao concluida com sucesso!" -ForegroundColor Green
-    Write-Host "Mods novos enviados: $uploadedCount | Ficheiros obsoletos removidos: $deletedCount \vert{} Total ativo:$total" -ForegroundColor Cyan
+    Write-Host "`nProcesso concluido!" -ForegroundColor Green
+    Write-Host "Mods processados: $total | Novos enviados: $uploadedCount \vert{} Obsoletos removidos:$deletedCount" -ForegroundColor Cyan
 
 } finally {
     $httpClient.Dispose()
