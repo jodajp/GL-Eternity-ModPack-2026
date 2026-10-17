@@ -37,19 +37,19 @@
                       "size":  8154909
                   },
                   {
-                      "path":  "Apotheosis-1.21.1-8.8.0.jar",
-                      "hash":  "11848e1129595d1e9ac302679128364d2fedf2085d9539797c808a9929abf972",
-                      "size":  7156644
+                      "path":  "Apotheosis-1.21.1-8.9.0.jar",
+                      "hash":  "23a8b4a21d0d8744f097c77c8a96fcba14c4b95f3b1bb542412f40dab272872e",
+                      "size":  7184314
                   },
                   {
-                      "path":  "ApothicAttributes-1.21.1-2.10.1.jar",
-                      "hash":  "484d52a58ba351d8e41775b351dad80f39a5bb4ed415bca67537a7f27de901ba",
-                      "size":  323264
+                      "path":  "ApothicAttributes-1.21.1-2.11.0.jar",
+                      "hash":  "17c42bb6dd5c0d820fe090e1bb5959578cd5ab7b70caf98a2a59b319fcc7e1ba",
+                      "size":  319609
                   },
                   {
-                      "path":  "ApothicEnchanting-1.21.1-1.6.2.jar",
-                      "hash":  "652406bc2e4c2d8488c93d35d38202390897e0ec6b4bc60b4813ce2fb6ad69f6",
-                      "size":  5415666
+                      "path":  "ApothicEnchanting-1.21.1-1.6.4.jar",
+                      "hash":  "aff9837f45c1c981d47a9e60b780c37a151ef881937faf5f72092895104c8bbb",
+                      "size":  5422885
                   },
                   {
                       "path":  "ApothicSpawners-1.21.1-1.4.0.jar",
@@ -82,19 +82,14 @@
                       "size":  1086922
                   },
                   {
-                      "path":  "asynclogger-2.2.2+1.21.1-neoforge.jar",
-                      "hash":  "233d79db772f54d0d01761b65d88e21342dbdab6694504df5121a1b0fe04b83a",
-                      "size":  589385
+                      "path":  "asynclogger-2.2.3+1.21.1-neoforge.jar",
+                      "hash":  "66904d62fd6831a5b41e079556acfbf696346d362d8bb55da83d6d10ba85f0a2",
+                      "size":  589640
                   },
                   {
                       "path":  "attributefix-neoforge-1.21.1-21.1.3.jar",
                       "hash":  "b2b20f3d44e824071284c14de3f4d3323d420e1c450040b339a5c37d2c382ad4",
                       "size":  19809
-                  },
-                  {
-                      "path":  "automobility-0.5.0.h+1.21.1-neoforge.jar",
-                      "hash":  "222d5d46d2bce2053def8af0859f9c5fe030a2c58d3fbaf6bd28af5442f12f05",
-                      "size":  1331432
                   },
                   {
                       "path":  "automodpack-mc1.21.1-neoforge-4.0.5.jar",
@@ -122,9 +117,9 @@
                       "size":  25085
                   },
                   {
-                      "path":  "bettersearch-neoforge-1.21.1-1.4.3.jar",
-                      "hash":  "4a53c3900ce95103f131b7898964d0d0a613cadaa9162d60ee3d09a4c8951b9b",
-                      "size":  338680
+                      "path":  "bettersearch-neoforge-1.21.1-1.6.0.jar",
+                      "hash":  "d45d69937b93f3b8f2989610079f271ee5ad8d82ce8c1790aefb7edefc5b3003",
+                      "size":  666325
                   },
                   {
                       "path":  "BetterTridents-v21.1.0-1.21.1-NeoForge.jar",
@@ -222,6 +217,11 @@
                       "size":  1061931
                   },
                   {
+                      "path":  "colorwheel-neoforge-1.3.0+mc1.21.1.jar",
+                      "hash":  "3c7c1f91b1add47053f40a58375de492b87ce83309be378527f100cb842c07c0",
+                      "size":  514376
+                  },
+                  {
                       "path":  "configured-neoforge-1.21.1-2.6.3.jar",
                       "hash":  "421ffd2604b5487cbdb284d1eb5d1cb8a7d28f3ff84d5b4bda25e0a579282a15",
                       "size":  428793
@@ -240,6 +240,11 @@
                       "path":  "cosmeticarmorreworked-1.21.1-v1-neoforge.jar",
                       "hash":  "6328049755735159c55f5918ac301cff53a8d8790c3fe63e32e7d8a0e37f123f",
                       "size":  92722
+                  },
+                  {
+                      "path":  "Craftspeed 1.7.5 (1.16+).jar",
+                      "hash":  "4394d19552885be93e9d82c1cb3400d3c01ae020c087bace1d443060c3176613",
+                      "size":  106529249
                   },
                   {
                       "path":  "create-1.21.1-6.0.10.jar",
@@ -262,9 +267,9 @@
                       "size":  1606407
                   },
                   {
-                      "path":  "createaddition-1.7.1.jar",
-                      "hash":  "69035faca181f645f23cff493fcfeebc5b3fb0f910460cf6547be13b6219062e",
-                      "size":  1726257
+                      "path":  "createaddition-1.7.2.jar",
+                      "hash":  "71e9c3ac39089e72c1e47a129a44e41eb55efc9534eecfdead8da8fb64313414",
+                      "size":  1772844
                   },
                   {
                       "path":  "createbigcannons-5.11.7+mc.1.21.1.jar",
@@ -437,9 +442,9 @@
                       "size":  82648
                   },
                   {
-                      "path":  "entityculling-neoforge-1.11.2-mc1.21.1.jar",
-                      "hash":  "3983b981da4a0583c7e58184a8631a23e56cc3b81f4cb53491ca600382879b82",
-                      "size":  1510018
+                      "path":  "entityculling-neoforge-1.21.1-optimized.jar",
+                      "hash":  "46ed4ac4bd664134940061f2b9550762b9cd2da2a3892d4dbf6be897db8cda29",
+                      "size":  1505957
                   },
                   {
                       "path":  "EpheroLib-1.21.1-NEO-FORGE-1.2.0.jar",
@@ -517,9 +522,9 @@
                       "size":  19961510
                   },
                   {
-                      "path":  "flerovium-neoforge-1.21.1-1.1.3-all.jar",
-                      "hash":  "6cae5ca14cf73ad592f92e531e25b652f940e37e26c264dac321e3feb965d5d1",
-                      "size":  184070
+                      "path":  "flerovium-neoforge-1.21.1-1.2.0-all.jar",
+                      "hash":  "ac340e0a6ff499173cab12fe9e10636113fb70781cc3a2f9b8588fe3fd0f3301",
+                      "size":  194016
                   },
                   {
                       "path":  "framework-neoforge-1.21.1-0.13.11.jar",
@@ -540,6 +545,11 @@
                       "path":  "geckolib-neoforge-1.21.1-4.9.3.jar",
                       "hash":  "20a1995e4074f387ff549e2c57ea79dd7d41ee83c6afb9dd6a6e840e592d1c47",
                       "size":  634531
+                  },
+                  {
+                      "path":  "gleterno-optimizer-1.1.0.jar",
+                      "hash":  "76a3963812c709678a7257e4024296acc99f2c9bcf073848b313256e6b35e26c",
+                      "size":  140126
                   },
                   {
                       "path":  "gnetum-3.3.6.jar",
@@ -567,9 +577,14 @@
                       "size":  213853
                   },
                   {
-                      "path":  "ImmediatelyFast-NeoForge-1.6.14+1.21.1.jar",
-                      "hash":  "15bf9bd6d8e3ae8ad35c5a4d90680424b534d9762d698c0a466965afcab5dd78",
-                      "size":  365195
+                      "path":  "ImmediatelyFast-NeoForge-1.6.15+1.21.1.jar",
+                      "hash":  "7d7b1d7b9f71d5303e42b2fa45f222a5ab06e0ef5982abb6da5dd9cc449b3702",
+                      "size":  368896
+                  },
+                  {
+                      "path":  "Immersive Vehicles-1.21.1-24.0.0.jar",
+                      "hash":  "1d2f7512604636265703b29fdf13d7f8ef2323694b6435f4392973da6e78d251",
+                      "size":  6131756
                   },
                   {
                       "path":  "immersive_optimization-neoforge-1.21.1-0.2.0.jar",
@@ -602,9 +617,9 @@
                       "size":  1295466
                   },
                   {
-                      "path":  "iris-flywheel-compat-NeoForge-2.4.0.jar",
-                      "hash":  "f5351cf9a838ae1624fcda78a8734b52cfde20de824db30e3f00dd00b9128ec8",
-                      "size":  907133
+                      "path":  "iris-neoforge-1.8.14-beta.1+mc1.21.1.jar",
+                      "hash":  "60d5f8bf52f25e9986440f4a4270a6bd986d9cff994510e1108ac1547063b314",
+                      "size":  2540723
                   },
                   {
                       "path":  "ItemBorders-1.21-neoforge-1.2.5.jar",
@@ -632,9 +647,9 @@
                       "size":  75431
                   },
                   {
-                      "path":  "jasione-1.0.8+1.21.1-neoforge.jar",
-                      "hash":  "5274ad6233a9ff346ec2c437b3243bde309a60822205195d87694d98433eb54f",
-                      "size":  747713
+                      "path":  "jasione-1.0.9+1.21.1-neoforge.jar",
+                      "hash":  "ba57efbc8890845303421d72d96a1b88e5a8e00662d420376c9df485fb34917f",
+                      "size":  748132
                   },
                   {
                       "path":  "jei-1.21.1-neoforge-19.57.0.446.jar",
@@ -652,9 +667,24 @@
                       "size":  4303084
                   },
                   {
-                      "path":  "kaleidoscopecookery-1.4.1-neoforge+mc1.21.1.jar",
-                      "hash":  "04dd114f975df57fb8bb3f09e8c96d6de18587838ab5a019271b51a2aec24f74",
-                      "size":  5018991
+                      "path":  "kaleidoscopecookery-1.6.0-neoforge+mc1.21.1.jar",
+                      "hash":  "e93784a3f17e546ebfa7c449572933bf67c6b694c01cb26b83ad120c40452b33",
+                      "size":  3496661
+                  },
+                  {
+                      "path":  "kaleidoscopetavern-1.2.0-neoforge+mc1.21.1.jar",
+                      "hash":  "03f35e1e614953b22cd1f5e34345613f3a6a283bf1b1c99659b57d58970edeff",
+                      "size":  1708047
+                  },
+                  {
+                      "path":  "kaleidoscope_compat-2.9.7-neoforge+mc1.21.1-Patch.2.jar",
+                      "hash":  "9876abc5bba1eaa06ea0c4ef140d1eb3b5a8fe9fa17150392a63e0449bc9eb34",
+                      "size":  1379264
+                  },
+                  {
+                      "path":  "kaleidoscope_world_liquor-1.1.12-neoforge+1.21.1.jar",
+                      "hash":  "d963089ad0a7f99a8950171d76913cfeea99a0126ee12b16c72c3162f8545da3",
+                      "size":  6802055
                   },
                   {
                       "path":  "Kerria-1.3.2+1.21.1-neoforge.jar",
@@ -670,6 +700,11 @@
                       "path":  "krypton_fnp-neoforge-1.21.1-0.2.28.1-1.21.1.jar",
                       "hash":  "05ebe849611daafe533fc57ed9b5156edfa9157ced04d38a7860b1e2075984b9",
                       "size":  1015871
+                  },
+                  {
+                      "path":  "kubejs-neoforge-2101.7.2-build.377.jar",
+                      "hash":  "df9a8458b1f83fed06ba54684977911795a5153a462b81a610895f5b1f2f0cbf",
+                      "size":  2294111
                   },
                   {
                       "path":  "letsdo-API-forge-1.3.0-beta-release-forge.jar",
@@ -752,9 +787,9 @@
                       "size":  405019
                   },
                   {
-                      "path":  "maps3d_1.2.1-1.21.1-neoforge.jar",
-                      "hash":  "5cc0f11c9cc68d51da2647028a6ec3b5262aa02e4fd8f65d732bf7286d6fb48a",
-                      "size":  929998
+                      "path":  "maps3d_1.2.4-1.21.1-neoforge.jar",
+                      "hash":  "4d8028c8392b1a65f4e3af9bfec4d081bea3ba8785b63597a9a5c17e088f7f35",
+                      "size":  941147
                   },
                   {
                       "path":  "mcjtylib-1.21-9.0.21.jar",
@@ -812,9 +847,9 @@
                       "size":  548464
                   },
                   {
-                      "path":  "modernfix-neoforge-5.27.24+mc1.21.1.jar",
-                      "hash":  "e6e9446890f0feb3aab3f6e73ae18cb17575c370f232179fef7baa30e61538fe",
-                      "size":  604333
+                      "path":  "modernfix-neoforge-5.27.26+mc1.21.1.jar",
+                      "hash":  "09f6842c63d14b3f1707f1f4a6f4602052f237f7efa9be135e41d3d97acf2a13",
+                      "size":  611043
                   },
                   {
                       "path":  "moonlight-1.21.1-3.6.4-neoforge.jar",
@@ -847,6 +882,11 @@
                       "size":  36042925
                   },
                   {
+                      "path":  "MTS Official Pack-1.21.1-V29.jar",
+                      "hash":  "f82e67f6c0cf85f79c6b295ef874890e0dc4460204d7768a4a46354d87a0b5d8",
+                      "size":  70999728
+                  },
+                  {
                       "path":  "mysterious_mountain_lib-1.2.15-1.21.1.jar",
                       "hash":  "d750a23aac696222984935263baeec96e95901bbeca134d8a1018d66e6e9e2d6",
                       "size":  291753
@@ -875,6 +915,11 @@
                       "path":  "notrample-1.21.1-1.0.1.jar",
                       "hash":  "59d481a2d8031dc2ea3eb2a4a5bd9c45fce19f0c7f89f09227d888f7040a2397",
                       "size":  6243
+                  },
+                  {
+                      "path":  "OAmP-1.21.1-V3.jar",
+                      "hash":  "74311b946527c6dbdc3b7cce14604bdae60add5ec7445cbe9776a78ffc433769",
+                      "size":  24289198
                   },
                   {
                       "path":  "observable-5.4.4.jar",
@@ -982,11 +1027,6 @@
                       "size":  64831
                   },
                   {
-                      "path":  "rftoolsbase-1.21-6.0.10.jar",
-                      "hash":  "2e2dfaebf11189a71973baede48491f1074bec48335ea39b128d012f5c83a301",
-                      "size":  463720
-                  },
-                  {
                       "path":  "rhino-2101.2.7-build.85.jar",
                       "hash":  "95df92ce578b2504cb16d8c9fc285303bf062eb15452246a18e57b7cf091c19a",
                       "size":  882075
@@ -1012,9 +1052,9 @@
                       "size":  77326
                   },
                   {
-                      "path":  "sensible_stackables-neoforge-3.0.3+1.21.1.jar",
-                      "hash":  "03d5231924eb92f8a9ceeeac2f8d88e4da3f5ef5b27fb7bd61564b1ffe1207f8",
-                      "size":  112105
+                      "path":  "sensible_stackables-2.1.3-hotfix.1+1.21.1-neoforge.jar",
+                      "hash":  "3dcd15b06438ef6492af3e1e8eae95887e3fd19459d41e99160f5c3ae3d34b11",
+                      "size":  48470
                   },
                   {
                       "path":  "skinlayers3d-neoforge-1.11.2-mc1.21.1.jar",
@@ -1037,14 +1077,14 @@
                       "size":  105355
                   },
                   {
-                      "path":  "sophisticatedcore-1.21.1-1.5.1.2341.jar",
-                      "hash":  "48d9b3703fedb455fc0aef1f57089f90cc0d2a2400979cef3bc37763fa125c41",
-                      "size":  1785221
+                      "path":  "sophisticatedcore-1.21.1-1.5.14.2413.jar",
+                      "hash":  "3abac9ba876a2eb19ce7ab9c080b81a5383f286d6e54b7d0912b29401aca9c2c",
+                      "size":  1818280
                   },
                   {
-                      "path":  "sophisticatedstorage-1.21.1-1.5.91.2127.jar",
-                      "hash":  "1594df1f45874825d22995457b8b664df8fcc83130bc86013c162740f0d12c47",
-                      "size":  1869204
+                      "path":  "sophisticatedstorage-1.21.1-1.6.7.2184.jar",
+                      "hash":  "377f733da3c155d82cfad2f7e546a216ed331bdaeb1b74f1eee55aac2e460af6",
+                      "size":  1932851
                   },
                   {
                       "path":  "spark-1.10.124-neoforge.jar",
@@ -1052,14 +1092,14 @@
                       "size":  3642581
                   },
                   {
-                      "path":  "StageBox-Mod-1.1.2-NeoForge-1.21.1.jar",
-                      "hash":  "5f81539c21c0a019f3031ebecc5511c13563603ea448d6a4327e0cf93c7b5865",
-                      "size":  1068131
+                      "path":  "StageBox-Mod-1.2.0-NeoForge-1.21.1.jar",
+                      "hash":  "61f46a21c72fb21b74e06bb86a0a850b95e44e7b3fa90f4b20c26bb2cb85d8ed",
+                      "size":  1847991
                   },
                   {
-                      "path":  "stageboxsync-1.0.1.jar",
-                      "hash":  "fe838610c49ea8357d172dfb9f7eddd8e61b19064edbab985f93c8fdc6528961",
-                      "size":  27130
+                      "path":  "stageboxsync-1.5.0.jar",
+                      "hash":  "1a58d4e44bf794824c982bae07130fd99cb028aaad96565b13f4323bc01c1237",
+                      "size":  35247
                   },
                   {
                       "path":  "Stoneworks-v21.1.0-1.21.1-NeoForge.jar",
@@ -1097,14 +1137,14 @@
                       "size":  752062
                   },
                   {
-                      "path":  "swem-1.21.1-1.6.11.jar",
-                      "hash":  "ac997b1f110c0a5b30646989c4fb4dd6f5ba28dec0d2e298611a75d840549092",
-                      "size":  12182086
+                      "path":  "swem-1.21.1-1.6.14.jar",
+                      "hash":  "147332edde5cdf7ad5ad5248d61d93e2c7c36982ed2f581353895a104ffbc852",
+                      "size":  12174359
                   },
                   {
-                      "path":  "tacz-neoforge-1.21.1-1.1.8-hotfix-r6.jar",
-                      "hash":  "58f6ab47c59218bdb10bb9eee1905b6cd27f3bc98d4af13982a6002a99b1d3e7",
-                      "size":  57242132
+                      "path":  "tacz-neoforge-1.21.1-1.1.8-hotfix-r7.jar",
+                      "hash":  "fa3a09f15265a4065a566960a8deab315f6c601a5f9a542840b362d455dd5470",
+                      "size":  57247579
                   },
                   {
                       "path":  "tacz_c-1.0.2+neoforge.1.21.1.jar",
@@ -1222,11 +1262,6 @@
                       "size":  1219792
                   },
                   {
-                      "path":  "xnet-1.21-7.0.6.jar",
-                      "hash":  "13765af3fa48d5edb958f7abfd1a48e54341ecf61de56b3300a15faebc4d904d",
-                      "size":  609288
-                  },
-                  {
                       "path":  "xptome-1.21.1-2.4.jar",
                       "hash":  "9cc3fb2352f7024faacd081f4efe437bdb3e3af09ea4f2c0b2f8ca845de1125e",
                       "size":  28123
@@ -1285,6 +1320,11 @@
                       "path":  "[1.21.1] SecurityCraft v1.10.2.1.jar",
                       "hash":  "75ac9e73c60caf58df7069f167dbacc00a640e1418207dff654f56a5fdb5f229",
                       "size":  5193371
+                  },
+                  {
+                      "path":  "nofly_client.js",
+                      "hash":  "9a07a8a8448c936449ae8f7e4091a52274184c75ddad90222d363b9bfb7613d6",
+                      "size":  3854
                   }
               ]
 }
