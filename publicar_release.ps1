@@ -109,6 +109,7 @@ $resourcepacksFolder = Join-Path $scriptRoot "resourcepacks"
 
 $contentJsonPath = Join-Path $scriptRoot "automodpack-content.json"
 $indexJsonPath = Join-Path $scriptRoot "automodpack-index.json"
+$deletionsHistoryPath = Join-Path $scriptRoot "automodpack-deletions-history.json"
 
 Write-Host "=================================================================" -ForegroundColor DarkCyan
 Write-Host "   Sincronizador de Modpack & GitHub Releases (AutoModpack)      " -ForegroundColor Cyan
@@ -229,7 +230,7 @@ foreach ($item in $localFilesToSync) {
         size = [string]$item.Size
         type = $item.Type
         editable = ($item.Type -eq "config")
-        forceCopy = $true
+        forceCopy = ($item.Type -ne "mod")
         sha1 = $sha1Hex
         murmur = [string]$murmurVal
     })
@@ -245,6 +246,85 @@ $sha1Engine.Dispose()
 $sha256Engine.Dispose()
 Write-Progress -Activity "A processar ficheiros locais" -Completed
 
+# ============================================================================
+# HISTORICO ACUMULATIVO DE MODS REMOVIDOS (nonModpackFilesToDelete)
+# Garante que quem perdeu 2 ou mais updates continua a ter tudo limpo e sem duplicados!
+# ============================================================================
+$deletionsDict = [System.Collections.Generic.Dictionary[string, PSCustomObject]]::new([System.StringComparer]::OrdinalIgnoreCase)
+
+# 1. Carregar historico acumulado persistente se existir
+if (Test-Path $deletionsHistoryPath) {
+    try {
+        $rawHist = (Get-Content -Path $deletionsHistoryPath -Raw -Encoding UTF8).Trim([char]0xFEFF)
+        if ($rawHist) {
+            $histItems = $rawHist | ConvertFrom-Json
+            foreach ($h in $histItems) {
+                if ($h.file -and $h.sha1) {
+                    $deletionsDict[$h.file] = $h
+                }
+            }
+        }
+    } catch {
+        Write-Warning "Aviso ao carregar historico de remocoes ($deletionsHistoryPath): $_"
+    }
+}
+
+# 2. Carregar do automodpack-content.json anterior se existir e comparar
+if (Test-Path $contentJsonPath) {
+    try {
+        $rawPrev = (Get-Content -Path $contentJsonPath -Raw -Encoding UTF8).Trim([char]0xFEFF)
+        if ($rawPrev) {
+            $prevManifest = $rawPrev | ConvertFrom-Json
+            if ($prevManifest.nonModpackFilesToDelete) {
+                foreach ($h in $prevManifest.nonModpackFilesToDelete) {
+                    if ($h.file -and $h.sha1 -and (-not $deletionsDict.ContainsKey($h.file))) {
+                        $deletionsDict[$h.file] = $h
+                    }
+                }
+            }
+
+            # Comparar a lista de ficheiros anterior com a lista nova
+            $currentRelativeFiles = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            foreach ($entry in $contentListEntries) {
+                $null = $currentRelativeFiles.Add($entry.file)
+            }
+
+            $nowTimestamp = [string][DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+            $novasRemocoes = 0
+
+            if ($prevManifest.list) {
+                foreach ($prevItem in $prevManifest.list) {
+                    if (-not $currentRelativeFiles.Contains($prevItem.file)) {
+                        # O ficheiro existia antes e ja nao existe agora: foi removido ou atualizado!
+                        if (-not $deletionsDict.ContainsKey($prevItem.file)) {
+                            $newDel = [PSCustomObject]@{
+                                file = $prevItem.file
+                                sha1 = $prevItem.sha1
+                                timestamp = $nowTimestamp
+                            }
+                            $deletionsDict[$prevItem.file] = $newDel
+                            $novasRemocoes++
+                            Write-Host "  -> Novo mod obsoleto registado para remocao: $($prevItem.file)" -ForegroundColor Yellow
+                        }
+                    }
+                }
+            }
+            if ($novasRemocoes -gt 0) {
+                Write-Host "-> $novasRemocoes mod(s) obsoleto(s) adicionados ao historico de remocao." -ForegroundColor Green
+            }
+        }
+    } catch {
+        Write-Warning "Aviso ao comparar manifesto anterior: $_"
+    }
+}
+
+# 3. Guardar historico acumulativo atualizado
+$deletionsList = [System.Collections.Generic.List[PSCustomObject]]::new($deletionsDict.Values)
+$deletionsListSorted = $deletionsList | Sort-Object file
+$jsonDeletions = $deletionsListSorted | ConvertTo-Json -Depth 4
+[System.IO.File]::WriteAllText($deletionsHistoryPath, $jsonDeletions, [System.Text.Encoding]::UTF8)
+Write-Host "-> Historico cumulativo de remocoes contem $($deletionsListSorted.Count) ficheiro(s) obsoleto(s)." -ForegroundColor DarkGreen
+
 # Gerar manifestos
 $autoModpackManifest = [PSCustomObject]@{
     modpackName = "GL-Eternity-2026"
@@ -253,6 +333,7 @@ $autoModpackManifest = [PSCustomObject]@{
     loaderVersion = "21.1.250"
     mcVersion = "1.21.1"
     list = $contentListEntries
+    nonModpackFilesToDelete = $deletionsListSorted
 }
 $jsonContent = $autoModpackManifest | ConvertTo-Json -Depth 6
 [System.IO.File]::WriteAllText($contentJsonPath, $jsonContent, [System.Text.Encoding]::UTF8)
@@ -264,7 +345,7 @@ $autoModpackIndex = [PSCustomObject]@{
 $jsonIndex = $autoModpackIndex | ConvertTo-Json -Depth 6
 [System.IO.File]::WriteAllText($indexJsonPath, $jsonIndex, [System.Text.Encoding]::UTF8)
 
-Write-Host "-> Manifestos gerados: automodpack-content.json e automodpack-index.json" -ForegroundColor Green
+Write-Host "-> Manifestos gerados: automodpack-content.json (com $($deletionsListSorted.Count) remocoes acumuladas) e automodpack-index.json" -ForegroundColor Green
 
 # ============================================================================
 # 3. MAPEAMENTO COMPLETO DA RELEASE REMOTA VIA GH API
@@ -430,7 +511,7 @@ Write-Host "-> Manifestos atualizados na Release com sucesso!" -ForegroundColor 
 # ============================================================================
 if ($AutoCommit) {
     Write-Host "`nA submeter alteracoes para o repositorio Git..." -ForegroundColor Cyan
-    git -C $scriptRoot add automodpack-content.json automodpack-index.json
+    git -C $scriptRoot add automodpack-content.json automodpack-index.json automodpack-deletions-history.json
     if ([System.IO.Directory]::Exists($kubejsFolder)) { git -C $scriptRoot add kubejs }
     if ([System.IO.Directory]::Exists($configFolder)) { git -C $scriptRoot add config }
 
