@@ -363,7 +363,10 @@ while ($true) {
     if ($arr.Length -eq 0) { break }
     foreach ($a in $arr) {
         if ($a.name -and $a.id) {
-            $remoteAssets[[string]$a.name] = [string]$a.id
+            $remoteAssets[[string]$a.name] = @{
+                Id = [string]$a.id
+                Size = [long]$a.size
+            }
         }
     }
     if ($arr.Length -lt 100) { break }
@@ -383,7 +386,8 @@ foreach ($rawName in $remoteAssets.Keys) {
     $normKey = Normalizar-NomeAsset $rawName
     $remoteAssetsNormalizados[$normKey] = @{
         RawName = $rawName
-        Id = $remoteAssets[$rawName]
+        Id = $remoteAssets[$rawName].Id
+        Size = $remoteAssets[$rawName].Size
     }
 }
 
@@ -407,7 +411,7 @@ if (-not $SkipPurge) {
 
         $assetNorm = Normalizar-NomeAsset $assetName
         if (-not $localAssetNamesNormalizados.Contains($assetNorm)) {
-            $assetId = $remoteAssets[$assetName]
+            $assetId = $remoteAssets[$assetName].Id
             Write-Host "-> A remover versao antiga da Release: $assetName" -ForegroundColor Red
             
             try {
@@ -439,6 +443,13 @@ $pendentes = [System.Collections.Generic.List[PSCustomObject]]::new()
 foreach ($item in $localFilesToSync) {
     $itemNorm = Normalizar-NomeAsset $item.AssetUploadName
     if (-not $remoteAssetsNormalizados.ContainsKey($itemNorm)) {
+        $pendentes.Add($item)
+    } elseif ($remoteAssetsNormalizados[$itemNorm].Size -ne $item.Size) {
+        Write-Host "-> Ficheiro alterado detetado ($($item.AssetUploadName)): local $($item.Size)B vs remoto $($remoteAssetsNormalizados[$itemNorm].Size)B" -ForegroundColor Yellow
+        $oldAssetId = $remoteAssetsNormalizados[$itemNorm].Id
+        try {
+            & gh api -X DELETE "repos/$Repo/releases/assets/$oldAssetId" | Out-Null
+        } catch {}
         $pendentes.Add($item)
     }
 }

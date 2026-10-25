@@ -30,6 +30,11 @@
     "timestamp": "1729207424000"
   },
   {
+    "file": "/mods/bettersearch-neoforge-1.21.1-1.6.0.jar",
+    "sha1": "abce29a27fd67ad0dd5a171af5cfb31ea7499ea7",
+    "timestamp": "1792898349536"
+  },
+  {
     "file": "/mods/createaddition-1.7.1.jar",
     "sha1": "779c49416643a6c5f176d5d500bf1bcbe75a5d18",
     "timestamp": "1729207424000"
@@ -45,6 +50,11 @@
     "timestamp": "1729207424000"
   },
   {
+    "file": "/mods/gleterno-optimizer-1.1.0.jar",
+    "sha1": "222333f977ee2ec3b499237788f9ab540441d8ad",
+    "timestamp": "1792898349536"
+  },
+  {
     "file": "/mods/ImmediatelyFast-NeoForge-1.6.14+1.21.1.jar",
     "sha1": "fee59af2f39c66d09c4c09f441c799e76af70f97",
     "timestamp": "1729207424000"
@@ -53,6 +63,11 @@
     "file": "/mods/iris-flywheel-compat-NeoForge-2.4.0.jar",
     "sha1": "b8630517b6017f4d075ce594e5ef333b38748029",
     "timestamp": "1729207424000"
+  },
+  {
+    "file": "/mods/Ixeris-4.6.8+1.21.1-neoforge.jar",
+    "sha1": "48c842b9a0b5c7d3c6ff85bb82a274f4bf1f2165",
+    "timestamp": "1792898349536"
   },
   {
     "file": "/mods/jasione-1.0.8+1.21.1-neoforge.jar",
@@ -73,6 +88,11 @@
     "file": "/mods/modernfix-neoforge-5.27.24+mc1.21.1.jar",
     "sha1": "1fe7f8b4176e86507cc8ed5460b6acdd3dac5529",
     "timestamp": "1729207424000"
+  },
+  {
+    "file": "/mods/modernfix-neoforge-5.27.26+mc1.21.1.jar",
+    "sha1": "69d468b70e53f6a014c778a81116a41a38fbab33",
+    "timestamp": "1792898349536"
   },
   {
     "file": "/mods/rftoolsbase-1.21-6.0.10.jar",
